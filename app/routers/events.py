@@ -72,6 +72,31 @@ async def reject_event(event_id: int, db: Session = Depends(get_db), current_use
     return event
 
 
+@router.post("/{event_id}/register", response_model=schemas.RegisterationOut)
+async def register_event(event_id: int, db: Session = Depends(get_db), current_user: schemas.User = Depends(oauth2.get_current_user)):
+    event = db.query(models.Event).filter(models.Event.id == event_id).first()
+    if event is None:
+        raise HTTPException(status_code=404, detail="Event not found")
+    db_registeration = models.Registeration(user_id=current_user.id, event_id=event_id)
+    db.add(db_registeration)
+    db.commit()
+    db.refresh(db_registeration)
+    return db_registeration
+
+
+@router.delete("/{event_id}/register", response_model=schemas.RegisterationOut)
+async def unregister_event(event_id: int, db: Session = Depends(get_db), current_user: schemas.User = Depends(oauth2.get_current_user)):
+    event = db.query(models.Event).filter(models.Event.id == event_id).first()
+    if event is None:
+        raise HTTPException(status_code=404, detail="Event not found")
+    db_registeration = db.query(models.Registeration).filter(models.Registeration.user_id == current_user.id).filter(models.Registeration.event_id == event_id).first()
+    if db_registeration is None:
+        raise HTTPException(status_code=404, detail="User not registered for event")
+    db.delete(db_registeration)
+    db.commit()
+    return db_registeration
+
+
 
 
 

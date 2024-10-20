@@ -152,3 +152,15 @@ class Permission(Base):
     requestor = relationship("User",
                            back_populates="permissions_requested",
                            foreign_keys=[user_id])
+
+class Registration(Base):
+    __tablename__ = 'registrations'
+
+    id = Column(Integer, primary_key=True)
+    event_id = Column(Integer, ForeignKey('events.id'))
+    user_id = Column(Integer, ForeignKey('users.id'))
+    registration_date = Column(DateTime, server_default=func.now())
+
+    # Relationships
+    event = relationship("Event", back_populates="registrations")
+    user = relationship("User", back_populates="registrations")

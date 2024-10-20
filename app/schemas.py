@@ -133,9 +133,22 @@ class Permission(PermissionBase):
     status: str
     created_at: Optional[datetime] = None
 
+
+
+class Registeration(BaseModel):
+    id: int
+    event: Event
+    user: User
+    registration_date: datetime
+
+
+
+
+
 class EventOut(Event):
     venue_bookings: List[VenueBooking] = []
     permissions: List[Permission] = []
+    registerations: List[RegisterationOut] = []
 
 
 class PermissionOut(Permission):
@@ -159,4 +172,5 @@ class UserOut(User):
     venue_bookings: List[VenueBooking] = []
     permissions_to_approve: List[Permission] = []
     permissions_requested: List[Permission] = []
+    registerations: List[RegisterationOut] = []
 
