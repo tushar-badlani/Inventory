@@ -23,8 +23,6 @@ class User(UserBase):
     is_active: bool
 
 
-
-
 class UserLogin(BaseModel):
     email: str
     password: str
@@ -38,7 +36,6 @@ class Token(BaseModel):
 class TokenData(BaseModel):
     id: Optional[int] = None
     role: Optional[str] = None
-
 
 
 class VenueBase(BaseModel):
@@ -57,8 +54,6 @@ class Venue(VenueBase):
     is_active: bool
 
 
-
-
 class VenueBookingBase(BaseModel):
     venue_id: int
     event_id: int
@@ -67,18 +62,15 @@ class VenueBookingBase(BaseModel):
     purpose: str
 
 
-
 class VenueBookingCreate(VenueBookingBase):
     permission_id: int
     pass
-
 
 
 class VenueBooking(VenueBookingBase):
     id: int
     status: str
     created_at: datetime
-
 
 
 class EventBase(BaseModel):
@@ -88,7 +80,6 @@ class EventBase(BaseModel):
     end_date: datetime
     type: Optional[str] = None
     logo: Optional[str] = None
-
 
 
 class EventCreate(EventBase):
@@ -117,7 +108,6 @@ class InventoryRequest(InventoryRequestBase):
     created_at: datetime
 
 
-
 class PermissionBase(BaseModel):
     event_id: int
     approver_id: int
@@ -128,33 +118,31 @@ class PermissionBase(BaseModel):
 class PermissionCreate(PermissionBase):
     pass
 
+
 class Permission(PermissionBase):
     id: int
     status: str
     created_at: Optional[datetime] = None
 
 
-
-class Registeration(BaseModel):
+class Registration(BaseModel):
     id: int
     event: Event
     user: User
     registration_date: datetime
 
 
-
-
-
 class EventOut(Event):
     venue_bookings: List[VenueBooking] = []
     permissions: List[Permission] = []
-    registerations: List[Registeration] = []
+    registrations: List[Registration] = []
 
 
 class PermissionOut(Permission):
     requestor: User
     event: Event
     approver: User
+
 
 class VenueOut(Venue):
     bookings: List[VenueBooking] = []
@@ -172,5 +160,4 @@ class UserOut(User):
     venue_bookings: List[VenueBooking] = []
     permissions_to_approve: List[Permission] = []
     permissions_requested: List[Permission] = []
-    registerations: List[Registeration] = []
-
+    registration: List[Registration] = []

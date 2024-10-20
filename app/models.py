@@ -5,6 +5,7 @@ import enum
 
 Base = declarative_base()
 
+
 class User(Base):
     __tablename__ = 'users'
 
@@ -22,14 +23,15 @@ class User(Base):
     events_organized = relationship("Event", back_populates="organizer")
     inventory_requests = relationship("InventoryRequest", back_populates="requester")
     venue_bookings = relationship("VenueBooking",
-                                back_populates="booker",
-                                foreign_keys="VenueBooking.booker_id")
+                                  back_populates="booker",
+                                  foreign_keys="VenueBooking.booker_id")
     permissions_to_approve = relationship("Permission",
-                                       back_populates="approver",
-                                       foreign_keys="Permission.approver_id")
+                                          back_populates="approver",
+                                          foreign_keys="Permission.approver_id")
     permissions_requested = relationship("Permission",
-                                      back_populates="requestor",
-                                      foreign_keys="Permission.user_id")
+                                         back_populates="requestor",
+                                         foreign_keys="Permission.user_id")
+
 
 class Venue(Base):
     __tablename__ = 'venues'
@@ -44,6 +46,7 @@ class Venue(Base):
 
     # Relationships
     bookings = relationship("VenueBooking", back_populates="venue")
+
 
 class VenueBooking(Base):
     __tablename__ = 'venue_bookings'
@@ -63,6 +66,7 @@ class VenueBooking(Base):
     venue = relationship("Venue", back_populates="bookings")
     event = relationship("Event", back_populates="venue_bookings")
     booker = relationship("User", back_populates="venue_bookings")  # Added relationship
+
 
 class Event(Base):
     __tablename__ = 'events'
@@ -86,6 +90,7 @@ class Event(Base):
     inventory_requests = relationship("InventoryRequest", back_populates="event")
     permissions = relationship("Permission", back_populates="event")
 
+
 class InventoryItem(Base):
     __tablename__ = 'inventory_items'
 
@@ -101,6 +106,7 @@ class InventoryItem(Base):
     # Relationships
     requests = relationship("InventoryRequest", back_populates="item")
     transactions = relationship("InventoryTransaction", back_populates="item")
+
 
 class InventoryRequest(Base):
     __tablename__ = 'inventory_requests'
@@ -119,6 +125,7 @@ class InventoryRequest(Base):
     item = relationship("InventoryItem", back_populates="requests")
     event = relationship("Event", back_populates="inventory_requests")
 
+
 class InventoryTransaction(Base):
     __tablename__ = 'inventory_transactions'
 
@@ -131,6 +138,7 @@ class InventoryTransaction(Base):
 
     # Relationships
     item = relationship("InventoryItem", back_populates="transactions")
+
 
 class Permission(Base):
     __tablename__ = 'permissions'
@@ -147,11 +155,12 @@ class Permission(Base):
     # Relationships
     event = relationship("Event", back_populates="permissions")
     approver = relationship("User",
-                          back_populates="permissions_to_approve",
-                          foreign_keys=[approver_id])
+                            back_populates="permissions_to_approve",
+                            foreign_keys=[approver_id])
     requestor = relationship("User",
-                           back_populates="permissions_requested",
-                           foreign_keys=[user_id])
+                             back_populates="permissions_requested",
+                             foreign_keys=[user_id])
+
 
 class Registration(Base):
     __tablename__ = 'registrations'

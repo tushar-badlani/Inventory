@@ -1,6 +1,5 @@
 from sqlalchemy.orm import Session
 
-
 from ..db import get_db
 from .. import schemas, models
 from fastapi import APIRouter, HTTPException, Depends
@@ -15,8 +14,11 @@ router = APIRouter(
 
 
 @router.post("/", response_model=schemas.Permission)
-async def create_permission(permission: schemas.PermissionCreate, db: Session = Depends(get_db), current_user: schemas.User = Depends(get_current_user)):
-    db_permission = models.Permission(user_id=current_user.id, event_id=permission.event_id, approver_id=permission.approver_id, permission_type=permission.permission_type, description=permission.description)
+async def create_permission(permission: schemas.PermissionCreate, db: Session = Depends(get_db),
+                            current_user: schemas.User = Depends(get_current_user)):
+    db_permission = models.Permission(user_id=current_user.id, event_id=permission.event_id,
+                                      approver_id=permission.approver_id, permission_type=permission.permission_type,
+                                      description=permission.description)
     db.add(db_permission)
     db.commit()
     db.refresh(db_permission)
@@ -37,9 +39,9 @@ async def read_permission(permission_id: int, db: Session = Depends(get_db)):
     return permission
 
 
-
 @router.post("/{permission_id}/approve", response_model=schemas.PermissionOut)
-async def approve_permission(permission_id: int, db: Session = Depends(get_db), current_user: schemas.User = Depends(get_current_user)):
+async def approve_permission(permission_id: int, db: Session = Depends(get_db),
+                             current_user: schemas.User = Depends(get_current_user)):
     permission = db.query(models.Permission).filter(models.Permission.id == permission_id).first()
     if permission is None:
         raise HTTPException(status_code=404, detail="Permission not found")
@@ -52,7 +54,8 @@ async def approve_permission(permission_id: int, db: Session = Depends(get_db), 
 
 
 @router.post("/{permission_id}/reject", response_model=schemas.PermissionOut)
-async def reject_permission(permission_id: int, db: Session = Depends(get_db), current_user: schemas.User = Depends(get_current_user)):
+async def reject_permission(permission_id: int, db: Session = Depends(get_db),
+                            current_user: schemas.User = Depends(get_current_user)):
     permission = db.query(models.Permission).filter(models.Permission.id == permission_id).first()
     if permission is None:
         raise HTTPException(status_code=404, detail="Permission not found")
@@ -62,10 +65,3 @@ async def reject_permission(permission_id: int, db: Session = Depends(get_db), c
     db.commit()
     db.refresh(permission)
     return permission
-
-
-
-
-
-
-
