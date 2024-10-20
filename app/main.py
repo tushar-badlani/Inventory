@@ -3,7 +3,7 @@ from starlette.middleware.cors import CORSMiddleware
 
 from . import models
 from .db import engine
-from .routers import users, venues, events, permissions
+from .routers import users, venues, events, permissions, auth, items
 
 origins = ["*"]
 app = FastAPI()
@@ -31,3 +31,5 @@ app.include_router(users.router)
 app.include_router(venues.router)
 app.include_router(events.router)
 app.include_router(permissions.router)
+app.include_router(auth.router)
+app.include_router(items.router)
