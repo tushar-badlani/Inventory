@@ -31,6 +31,7 @@ class User(Base):
     permissions_requested = relationship("Permission",
                                          back_populates="requestor",
                                          foreign_keys="Permission.user_id")
+    registrations = relationship("Registration", back_populates="user")
 
 
 class Venue(Base):
@@ -89,6 +90,7 @@ class Event(Base):
     venue_bookings = relationship("VenueBooking", back_populates="event")
     inventory_requests = relationship("InventoryRequest", back_populates="event")
     permissions = relationship("Permission", back_populates="event")
+    registrations = relationship("Registration", back_populates="event")
 
 
 class InventoryItem(Base):
