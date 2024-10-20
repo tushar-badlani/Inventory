@@ -29,7 +29,7 @@ async def read_permissions(skip: int = 0, limit: int = 100, db: Session = Depend
     return permissions
 
 
-@router.get("/{permission_id}", response_model=schemas.Permission)
+@router.get("/{permission_id}", response_model=schemas.PermissionOut)
 async def read_permission(permission_id: int, db: Session = Depends(get_db)):
     permission = db.query(models.Permission).filter(models.Permission.id == permission_id).first()
     if permission is None:
@@ -38,7 +38,7 @@ async def read_permission(permission_id: int, db: Session = Depends(get_db)):
 
 
 
-@router.post("/{permission_id}/approve", response_model=schemas.Permission)
+@router.post("/{permission_id}/approve", response_model=schemas.PermissionOut)
 async def approve_permission(permission_id: int, db: Session = Depends(get_db), current_user: schemas.User = Depends(get_current_user)):
     permission = db.query(models.Permission).filter(models.Permission.id == permission_id).first()
     if permission is None:
@@ -51,7 +51,7 @@ async def approve_permission(permission_id: int, db: Session = Depends(get_db), 
     return permission
 
 
-@router.post("/{permission_id}/reject", response_model=schemas.Permission)
+@router.post("/{permission_id}/reject", response_model=schemas.PermissionOut)
 async def reject_permission(permission_id: int, db: Session = Depends(get_db), current_user: schemas.User = Depends(get_current_user)):
     permission = db.query(models.Permission).filter(models.Permission.id == permission_id).first()
     if permission is None:

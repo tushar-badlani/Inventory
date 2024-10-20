@@ -32,7 +32,7 @@ async def read_venues(skip: int = 0, limit: int = 100, db: Session = Depends(get
     return venues
 
 
-@router.get("/{venue_id}", response_model=schemas.Venue)
+@router.get("/{venue_id}", response_model=schemas.VenueOut)
 async def read_venue(venue_id: int, db: Session = Depends(get_db)):
     venue = db.query(models.Venue).filter(models.Venue.id == venue_id).first()
     if venue is None:
@@ -40,7 +40,7 @@ async def read_venue(venue_id: int, db: Session = Depends(get_db)):
     return venue
 
 
-@router.post("/{venue_id}/book", response_model=schemas.VenueBooking)
+@router.post("/{venue_id}/book", response_model=schemas.VenueBookingOut)
 async def book_venue(venue_id: int, venue_booking: schemas.VenueBookingCreate, db: Session = Depends(get_db), current_user: schemas.User = Depends(get_current_user)):
     permission = db.query(models.Permission).filter(models.Permission.id == venue_booking.permission_id).first()
     if permission is None:

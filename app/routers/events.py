@@ -42,7 +42,7 @@ async def read_event(event_id: int, db: Session = Depends(get_db)):
     return event
 
 
-@router.post("/{event_id}/approve", response_model=schemas.Event)
+@router.post("/{event_id}/approve", response_model=schemas.EventOut)
 async def approve_event(event_id: int, db: Session = Depends(get_db), current_user: schemas.User = Depends(oauth2.get_current_user)):
     if current_user.role == "student":
         raise HTTPException(status_code=401, detail="Not authorized")
@@ -57,7 +57,7 @@ async def approve_event(event_id: int, db: Session = Depends(get_db), current_us
     return event
 
 
-@router.post("/{event_id}/reject", response_model=schemas.Event)
+@router.post("/{event_id}/reject", response_model=schemas.EventOut)
 async def reject_event(event_id: int, db: Session = Depends(get_db), current_user: schemas.User = Depends(oauth2.get_current_user)):
     if current_user.role == "student":
         raise HTTPException(status_code=401, detail="Not authorized")

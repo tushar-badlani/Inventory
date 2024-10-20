@@ -70,7 +70,6 @@ class VenueBookingBase(BaseModel):
 
 class VenueBookingCreate(VenueBookingBase):
     permission_id: int
-    booker_id: int
     pass
 
 
@@ -94,7 +93,6 @@ class EventBase(BaseModel):
 
 class EventCreate(EventBase):
     expected_attendance: Optional[int] = None
-    organizer_id: int
     pass
 
 
@@ -121,24 +119,44 @@ class InventoryRequest(InventoryRequestBase):
 
 
 class PermissionBase(BaseModel):
-    user_id: int
     event_id: int
+    approver_id: int
+    permission_type: str
+    description: Optional[str] = None
 
 
 class PermissionCreate(PermissionBase):
-    approver_id: int
-    permission_type: str
-    description: Optional[str] = None
-
+    pass
 
 class Permission(PermissionBase):
     id: int
-    approver_id: int
-    permission_type: str
-    description: Optional[str] = None
     status: str
     created_at: Optional[datetime] = None
 
 class EventOut(Event):
     venue_bookings: List[VenueBooking] = []
     permissions: List[Permission] = []
+
+
+class PermissionOut(Permission):
+    requestor: User
+    event: Event
+    approver: User
+
+class VenueOut(Venue):
+    bookings: List[VenueBooking] = []
+
+
+class VenueBookingOut(VenueBooking):
+    venue: Venue
+    event: Event
+    booker: User
+
+
+class UserOut(User):
+    events_organized: List[Event] = []
+    inventory_requests: List[InventoryRequest] = []
+    venue_bookings: List[VenueBooking] = []
+    permissions_to_approve: List[Permission] = []
+    permissions_requested: List[Permission] = []
+
