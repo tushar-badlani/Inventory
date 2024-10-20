@@ -14,7 +14,6 @@ router = APIRouter(
 
 @router.post("/", response_model=schemas.EventCreate)
 async def create_event(event: schemas.EventCreate, db: Session = Depends(get_db)):
-
     db_event = models.Event(title=event.title, description=event.description, start_date=event.start_date, end_date=event.end_date, organizer_id=1, expected_attendance=event.expected_attendance)
     db.add(db_event)
     db.commit()
@@ -27,7 +26,7 @@ async def create_event(event: schemas.EventCreate, db: Session = Depends(get_db)
 @router.get("/", response_model=List[schemas.Event])
 async def read_events(skip: int = 0, limit: int = 100, db: Session = Depends(get_db), search: str = None):
     if search is not None:
-        events = db.query(models.Event).filter(func.lower(models.Event.title).contains(search.lower())).offset(skip).limit(limit).all()
+        events = db.query(models.Event).filter(func.lower(models.Event.title).contains(search.lower())).filter(models.Event.status == "approved").offset(skip).limit(limit).all()
     else:
         events = db.query(models.Event).offset(skip).limit(limit).all()
     return events
@@ -41,13 +40,28 @@ async def read_event(event_id: int, db: Session = Depends(get_db)):
     return event
 
 
-@router.post("/{event_id}/book", response_model=schemas.VenueBooking)
-async def book_venue(event_id: int, venue_booking: schemas.VenueBookingCreate, db: Session = Depends(get_db)):
-    db_venue_booking = models.VenueBooking(venue_id=venue_booking.venue_id, event_id=event_id, booker_id=venue_booking.booker_id, start_time=venue_booking.start_time, end_time=venue_booking.end_time, purpose=venue_booking.purpose)
-    db.add(db_venue_booking)
+@router.post("/{event_id}/approve", response_model=schemas.Event)
+async def approve_event(event_id: int, db: Session = Depends(get_db)):
+    event = db.query(models.Event).filter(models.Event.id == event_id).first()
+    if event is None:
+        raise HTTPException(status_code=404, detail="Event not found")
+    event.status = "approved"
     db.commit()
-    db.refresh(db_venue_booking)
-    return db_venue_booking
+    db.refresh(event)
+    return event
+
+
+@router.post("/{event_id}/reject", response_model=schemas.Event)
+async def reject_event(event_id: int, db: Session = Depends(get_db)):
+    event = db.query(models.Event).filter(models.Event.id == event_id).first()
+    if event is None:
+        raise HTTPException(status_code=404, detail="Event not found")
+    event.status = "rejected"
+    db.commit()
+    db.refresh(event)
+    return event
+
+
 
 
 
