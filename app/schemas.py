@@ -148,7 +148,7 @@ class Registeration(BaseModel):
 class EventOut(Event):
     venue_bookings: List[VenueBooking] = []
     permissions: List[Permission] = []
-    registerations: List[RegisterationOut] = []
+    registerations: List[Registeration] = []
 
 
 class PermissionOut(Permission):
@@ -172,5 +172,5 @@ class UserOut(User):
     venue_bookings: List[VenueBooking] = []
     permissions_to_approve: List[Permission] = []
     permissions_requested: List[Permission] = []
-    registerations: List[RegisterationOut] = []
+    registerations: List[Registeration] = []
 

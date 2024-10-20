@@ -72,7 +72,7 @@ async def reject_event(event_id: int, db: Session = Depends(get_db), current_use
     return event
 
 
-@router.post("/{event_id}/register", response_model=schemas.RegisterationOut)
+@router.post("/{event_id}/register", response_model=schemas.Registeration)
 async def register_event(event_id: int, db: Session = Depends(get_db), current_user: schemas.User = Depends(oauth2.get_current_user)):
     event = db.query(models.Event).filter(models.Event.id == event_id).first()
     if event is None:
@@ -84,7 +84,7 @@ async def register_event(event_id: int, db: Session = Depends(get_db), current_u
     return db_registeration
 
 
-@router.delete("/{event_id}/register", response_model=schemas.RegisterationOut)
+@router.delete("/{event_id}/register", response_model=schemas.Registeration)
 async def unregister_event(event_id: int, db: Session = Depends(get_db), current_user: schemas.User = Depends(oauth2.get_current_user)):
     event = db.query(models.Event).filter(models.Event.id == event_id).first()
     if event is None:
