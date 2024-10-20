@@ -92,20 +92,38 @@ class Event(EventBase):
     organizer: User
 
 
-class InventoryRequestBase(BaseModel):
-    item_name: str
+class InventoryItemBase(BaseModel):
+    name: str
     quantity: int
-    requestor_id: int
+    unit: str
+    description: Optional[str] = None
 
+
+class InventoryItemCreate(InventoryItemBase):
+    pass
+
+
+class InventoryItem(InventoryItemBase):
+    id: int
+    is_active: bool
+    created_at: datetime
+
+
+
+
+class InventoryRequestBase(BaseModel):
+    quantity_requested: int
 
 class InventoryRequestCreate(InventoryRequestBase):
     pass
 
-
 class InventoryRequest(InventoryRequestBase):
     id: int
+    item: InventoryItem
+    event: Event
+    requestor: User
     status: str
-    created_at: datetime
+    request_date: datetime
 
 
 class PermissionBase(BaseModel):
