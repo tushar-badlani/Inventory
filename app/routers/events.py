@@ -13,8 +13,10 @@ router = APIRouter(
 
 
 @router.post("/", response_model=schemas.EventCreate)
-async def create_event(event: schemas.EventCreate, db: Session = Depends(get_db)):
-    db_event = models.Event(title=event.title, description=event.description, start_date=event.start_date, end_date=event.end_date, organizer_id=1, expected_attendance=event.expected_attendance)
+async def create_event(event: schemas.EventCreate, db: Session = Depends(get_db), current_user: schemas.User = Depends(oauth2.get_current_user)):
+    if current_user.role == "student":
+        raise HTTPException(status_code=401, detail="Not authorized")
+    db_event = models.Event(title=event.title, description=event.description, start_date=event.start_date, end_date=event.end_date, expected_attendance=event.expected_attendance)
     db.add(db_event)
     db.commit()
     db.refresh(db_event)
@@ -41,7 +43,11 @@ async def read_event(event_id: int, db: Session = Depends(get_db)):
 
 
 @router.post("/{event_id}/approve", response_model=schemas.Event)
-async def approve_event(event_id: int, db: Session = Depends(get_db)):
+async def approve_event(event_id: int, db: Session = Depends(get_db), current_user: schemas.User = Depends(oauth2.get_current_user)):
+    if current_user.role == "student":
+        raise HTTPException(status_code=401, detail="Not authorized")
+    if current_user.role == "organization":
+        raise HTTPException(status_code=401, detail="Not authorized")
     event = db.query(models.Event).filter(models.Event.id == event_id).first()
     if event is None:
         raise HTTPException(status_code=404, detail="Event not found")
@@ -52,7 +58,11 @@ async def approve_event(event_id: int, db: Session = Depends(get_db)):
 
 
 @router.post("/{event_id}/reject", response_model=schemas.Event)
-async def reject_event(event_id: int, db: Session = Depends(get_db)):
+async def reject_event(event_id: int, db: Session = Depends(get_db), current_user: schemas.User = Depends(oauth2.get_current_user)):
+    if current_user.role == "student":
+        raise HTTPException(status_code=401, detail="Not authorized")
+    if current_user.role == "organization":
+        raise HTTPException(status_code=401, detail="Not authorized")
     event = db.query(models.Event).filter(models.Event.id == event_id).first()
     if event is None:
         raise HTTPException(status_code=404, detail="Event not found")
